@@ -1,0 +1,50 @@
+{
+  "project_info": {
+    "project_number": "93354278001",
+    "firebase_url": "https://vietchildvocab.firebaseio.com",
+    "project_id": "vietchildvocab",
+    "storage_bucket": "vietchildvocab.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:93354278001:android:c850c3bad13fd04d",
+        "android_client_info": {
+          "package_name": "vn.vietchild.vietchildvocab"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "93354278001-cbubqeabt3cohl8dh3npvgr91cd7nkvq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "vn.vietchild.vietchildvocab",
+            "certificate_hash": "B7A836C21E07BA9041C5A3BF5481478DF2E0E03F"
+          }
+        },
+        {
+          "client_id": "93354278001-vnf2530na07fkvdn1jmc1e5qo3ekl5mh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCA-rQnRlEIhnrMsPIKfKr8HDxAOXVGGVQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

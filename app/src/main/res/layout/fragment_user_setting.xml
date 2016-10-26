@@ -1,0 +1,138 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="vn.vietchild.vietchildvocab.Fragments.UserSettingFragment"
+    android:id="@+id/fragment_user_setting"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent">
+
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:orientation="horizontal"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:background="#04c518">
+        <ImageView
+            android:layout_gravity="center_vertical"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:id="@+id/imgSettingUserAvatar"/>
+        <TextView
+            android:textAlignment="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvSettingUserCoin"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:textColor="@android:color/holo_orange_light"
+            android:text="COIN"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:padding="16dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/user_setting_lblTilte"
+            android:textStyle="normal|bold"
+            android:textSize="18sp"
+            android:textColor="@android:color/holo_blue_dark" />
+
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/lblUserName"
+            android:text="@string/user_setting_lblUserName"
+            android:textSize="16sp"
+            android:textStyle="normal|bold"
+            />
+        <EditText
+            android:enabled="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/edtUserName"
+            android:hint="Change your nick!"
+            android:textSize="16sp"
+            android:textAlignment="center"
+            android:textStyle="normal|bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/lblPassword"
+            android:text="@string/user_setting_changePassword"
+            android:textStyle="normal|bold"
+            android:textSize="16sp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:password="true"
+            android:layout_height="wrap_content"
+            android:id="@+id/edtUserOldPassword"
+            android:hint="@string/user_setting_lblOldPassword"
+            android:textSize="16sp"
+            android:textAlignment="center"
+            android:textStyle="normal|italic"
+            android:enabled="false"/>
+
+        <EditText
+            android:password="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/edtUserNewPassword"
+            android:hint="@string/user_setting_lblNewPassword"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            android:enabled="false"
+            android:textStyle="normal|italic" />
+
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        >
+
+        <Button
+            android:text="@string/user_setting_btnEditProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:id="@+id/btnEditProfile"
+            android:background="#04c518"
+            />
+
+        <Button
+            android:text="@string/user_setting_btnSaveProfile"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:id="@+id/btnSaveProfile"
+            android:background="#04c518"/>
+    </RelativeLayout>
+
+</LinearLayout>
+</ScrollView>

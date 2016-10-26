@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="">
+
+    <ImageView
+        android:layout_height="match_parent"
+        app:srcCompat="@drawable/common_google_signin_btn_icon_dark"
+        android:id="@+id/imageViewItem"
+        android:layout_width="match_parent"
+        android:layout_gravity="center_vertical|center_horizontal"
+
+         />
+
+    <ImageView
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/imageViewItemTrue"
+        app:srcCompat="@drawable/itemtrue"
+        android:visibility="invisible"
+         />
+    <ImageView
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/imageViewItemFalse"
+        app:srcCompat="@drawable/itemfalse"
+        android:visibility="invisible"
+        />
+</FrameLayout>
