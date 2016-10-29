@@ -17,6 +17,12 @@
         android:id="@+id/btnCourse"
         android:text="show text"
         />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvNewCourse"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
 <GridView
     android:id="@+id/gridViewCourse"
     android:layout_width="wrap_content"

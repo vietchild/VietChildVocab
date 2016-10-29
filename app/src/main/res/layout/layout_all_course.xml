@@ -1,37 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <android.support.v7.widget.CardView
+        android:id="@+id/cvNewCourse"
 
-    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/cardview_course_margin"
+        android:elevation="@dimen/cardview_course_elevation"
+        card_view:cardCornerRadius="@dimen/cardview_course_radius">
+    <RelativeLayout
+        android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:src="@drawable/logovietchild"
-        android:id="@+id/imageViewCourse"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textViewCourseName"
-        />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textViewCoursePrice"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textViewCourseDesc"
-        />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textViewCourseTotalItems"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Buy"
-        android:id="@+id/btnCourseBuy"/>
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:clickable="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/logovietchild"
+            android:id="@+id/imageViewCourse"/>
+        <TextView
+            android:layout_below="@+id/imageViewCourse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewCourseName"
+            />
+        <TextView
+            android:layout_below="@+id/textViewCourseName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewCoursePrice"/>
+        <TextView
+            android:layout_below="@+id/textViewCoursePrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewCourseDesc"
+            />
+        <TextView
+            android:layout_below="@+id/textViewCourseDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewCourseTotalItems"/>
+        <Button
+            android:layout_below="@+id/textViewCourseTotalItems"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Buy"
+            android:id="@+id/btnCourseBuy"/>
+    </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
 
 </LinearLayout>

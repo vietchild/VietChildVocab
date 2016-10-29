@@ -2,6 +2,7 @@ package vn.vietchild.vietchildvocab;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.widget.GridView;
 import android.widget.Toast;
 
@@ -17,7 +18,6 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
-import vn.vietchild.vietchildvocab.Adapters.NewCourseAdapter;
 import vn.vietchild.vietchildvocab.Model.Course;
 
 public class MainActivity extends BaseActivity {
@@ -27,6 +27,9 @@ public class MainActivity extends BaseActivity {
     private   FirebaseAuth mAuths;
     private   int RC_SIGN_IN = 1980;
     private    String uuid = getUid();
+    RecyclerView rvNewCourse;
+
+
     ArrayList<Course> mCourses;
     GridView gridViewCourse;
 
@@ -41,10 +44,10 @@ public class MainActivity extends BaseActivity {
         mStorages = FirebaseStorage.getInstance();
         mAuths = FirebaseAuth.getInstance();
         mCourses = new ArrayList<Course>();
-        gridViewCourse = (GridView)findViewById(R.id.gridViewCourse);
+      /*  gridViewCourse = (GridView)findViewById(R.id.gridViewCourse);
         final NewCourseAdapter courseAdapter = new NewCourseAdapter(getApplicationContext(),mCourses);
         gridViewCourse.setAdapter(courseAdapter);
-
+*/
         //LOGIN
         if(mAuths.getCurrentUser()!= null) {
             //TODO : ket noi database
@@ -74,7 +77,7 @@ public class MainActivity extends BaseActivity {
                     Toast.makeText(MainActivity.this, " " + course.getCourseimage() + " " + course.getCoursetotalitems()
                             , Toast.LENGTH_SHORT).show();
                 }
-                courseAdapter.notifyDataSetChanged();
+               // courseAdapter.notifyDataSetChanged();
                 hideProgressDialog();
             }
 
