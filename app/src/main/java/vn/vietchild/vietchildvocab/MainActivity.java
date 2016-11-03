@@ -86,9 +86,9 @@ public class MainActivity extends BaseActivity {
         btnNewActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Intent intent = new Intent(MainActivity.this, MainNavigationActivity.class);
-                // startActivity(intent);
-              //  finish();
+                Intent intent = new Intent(getApplicationContext(), NavigationActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
     }
