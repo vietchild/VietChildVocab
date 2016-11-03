@@ -33,4 +33,9 @@
     <string name="user_change_password_success">Profile changed successfully</string>
     <!-- Interface -->
     <string name="progressdialog_loading">Loading...</string>
+
+    <!-- Add new course -->
+    <string name="added_new_course">New course has been added successfully</string>
+    <string name="added_new_module">New module has been added successfully</string>
+    <string name="title_activity_main2">Main2Activity</string>
 </resources>

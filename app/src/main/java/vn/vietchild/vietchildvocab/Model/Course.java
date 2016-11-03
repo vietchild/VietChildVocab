@@ -15,7 +15,7 @@ import java.util.Map;
 @IgnoreExtraProperties
 public class Course implements Parcelable {
 
-    public String coursename,courseimage,coursedescription;
+    public String coursename,courseimage,coursedescription,courseid;
     public Long courseprice,coursetotalitems;
     public Long coursescore = Long.valueOf(0);
 
@@ -23,10 +23,11 @@ public class Course implements Parcelable {
     public Course() {
     }
 
-    public Course(String coursename, String courseimage, String coursedescription, Long courseprice) {
+    public Course(String coursename, String courseimage, String coursedescription, String courseid, Long courseprice) {
         this.coursename = coursename;
         this.courseimage = courseimage;
         this.coursedescription = coursedescription;
+        this.courseid = courseid;
         this.courseprice = courseprice;
     }
 
@@ -34,6 +35,7 @@ public class Course implements Parcelable {
         coursename = in.readString();
         courseimage = in.readString();
         coursedescription = in.readString();
+        courseid = in.readString();
     }
 
     @Override
@@ -41,6 +43,7 @@ public class Course implements Parcelable {
         dest.writeString(coursename);
         dest.writeString(courseimage);
         dest.writeString(coursedescription);
+        dest.writeString(courseid);
     }
 
     @Override
@@ -60,28 +63,12 @@ public class Course implements Parcelable {
         }
     };
 
-    public Long getCoursetotalitems() {
-        return coursetotalitems;
-    }
-
-    public void setCoursetotalitems(Long coursetotalitems) {
-        this.coursetotalitems = coursetotalitems;
-    }
-
     public String getCoursename() {
         return coursename;
     }
 
     public void setCoursename(String coursename) {
         this.coursename = coursename;
-    }
-
-    public Long getCoursescore() {
-        return coursescore;
-    }
-
-    public void setCoursescore(Long coursescore) {
-        this.coursescore = coursescore;
     }
 
     public Long getCourseprice() {
@@ -92,14 +79,6 @@ public class Course implements Parcelable {
         this.courseprice = courseprice;
     }
 
-    public String getCoursedescription() {
-        return coursedescription;
-    }
-
-    public void setCoursedescription(String coursedescription) {
-        this.coursedescription = coursedescription;
-    }
-
     public String getCourseimage() {
         return courseimage;
     }
@@ -108,14 +87,38 @@ public class Course implements Parcelable {
         this.courseimage = courseimage;
     }
 
+    public String getCoursedescription() {
+        return coursedescription;
+    }
+
+    public void setCoursedescription(String coursedescription) {
+        this.coursedescription = coursedescription;
+    }
+
+    public String getCourseid() {
+        return courseid;
+    }
+
+    public void setCourseid(String courseid) {
+        this.courseid = courseid;
+    }
+
+    public Long getCoursetotalitems() {
+        return coursetotalitems;
+    }
+
+    public void setCoursetotalitems(Long coursetotalitems) {
+        this.coursetotalitems = coursetotalitems;
+    }
+
     // [START course_to_map]
     @Exclude
     public Map<String, Object> toCourseMap() {
         HashMap<String, Object> result = new HashMap<>();
+        result.put("courseid", courseid);
         result.put("coursename", coursename);
-        result.put("courseimage", courseimage);
         result.put("coursedescription", coursedescription);
-        result.put("courseprice", courseprice);
+        result.put("coursetotalitems", coursetotalitems);
         result.put("coursescore", coursescore);
 
         return result;

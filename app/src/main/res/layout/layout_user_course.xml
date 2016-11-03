@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+<android.support.v7.widget.CardView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    card_view:cardCornerRadius="@dimen/cardview_course_radius"
+    android:elevation="@dimen/cardview_course_elevation"
+    android:layout_margin="@dimen/cardview_course_margin">
+
+    <RelativeLayout
+       android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="160dp"
+            android:clickable="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/logovietchild"
+            android:id="@+id/ivUserCourse"/>
+
+        <TextView
+            android:text="Course Name"
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvSelectedCourseName"
+            android:layout_marginLeft="20dp"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/ivUserCourse"
+             />
+
+        <TextView
+            android:text="Course Description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvSelectedCourseDesc"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf= "@+id/ivUserCourse"
+            android:layout_below="@+id/tvSelectedCourseName"
+            />
+        <TextView
+            android:text="Course Progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvSelectedCourseProgress"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf= "@+id/ivUserCourse"
+            android:layout_below="@+id/tvSelectedCourseDesc"
+
+            />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Learn"
+            android:layout_marginLeft="20dp"
+            android:id="@+id/btnCourseLearn"
+            android:layout_toRightOf="@+id/ivUserCourse"
+            android:layout_below="@+id/tvSelectedCourseProgress"/>
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>
+    </LinearLayout>

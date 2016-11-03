@@ -30,8 +30,7 @@ import java.io.File;
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 import vn.vietchild.vietchildvocab.R;
 
-import static vn.vietchild.vietchildvocab.MainNavigationActivity.REQUEST_CODE_IMAGE;
-import static vn.vietchild.vietchildvocab.MainNavigationActivity.mAuth;
+
 
 /*
 Fragment này dùng để Update thông tin cá nhân của người dùng
@@ -42,7 +41,8 @@ Trong trường hợp người dùng không lưu thay đổi, isUpdate = False;
 public class UserSettingFragment extends Fragment {
     private final static String TAG = "UserSettingFragment";
     private onUpdateUserSetting mListener;
-
+    private FirebaseAuth mAuth;
+    private int REQUEST_CODE_IMAGE = 1;
     public UserSettingFragment() {
         // Required empty public constructor
     }

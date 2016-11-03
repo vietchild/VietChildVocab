@@ -1,21 +1,22 @@
 package vn.vietchild.vietchildvocab;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
-import android.widget.GridView;
+import android.util.TypedValue;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import vn.vietchild.vietchildvocab.Model.Course;
@@ -26,36 +27,29 @@ public class MainActivity extends BaseActivity {
     private   FirebaseStorage mStorages;
     private   FirebaseAuth mAuths;
     private   int RC_SIGN_IN = 1980;
-    private    String uuid = getUid();
-    RecyclerView rvNewCourse;
 
-
+    private Button btnCourse, btnNewActivity;
     ArrayList<Course> mCourses;
-    GridView gridViewCourse;
 
+    // TODO: KIỂM TRA VÀ BẮT UPDATE GOOGLE PLAY SERVICES
+    // TODO: KIỂM TRA TÌNH TRẠNG INTERNET TRONG LẦN ĐẦU TIỀN MỞ MÁY
     StorageReference mStorageRef;
     DataSnapshot mdataSnapshot;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mCourses = new ArrayList<>();
-        mDatabases = FirebaseDatabase.getInstance().getReference();
-        mStorages = FirebaseStorage.getInstance();
+
         mAuths = FirebaseAuth.getInstance();
-        mCourses = new ArrayList<Course>();
-      /*  gridViewCourse = (GridView)findViewById(R.id.gridViewCourse);
-        final NewCourseAdapter courseAdapter = new NewCourseAdapter(getApplicationContext(),mCourses);
-        gridViewCourse.setAdapter(courseAdapter);
-*/
-        //LOGIN
+
+
+             //LOGIN
+
         if(mAuths.getCurrentUser()!= null) {
             //TODO : ket noi database
-         /*
-            Intent intent = new Intent(MainActivity.this, MainNavigationActivity.class);
-            startActivity(intent);
-            finish();
-            */
+            Toast.makeText(this, "ĐÃ SIGN IN", Toast.LENGTH_SHORT).show();
+           /* VCDownloader newDownloader = new VCDownloader(getApplicationContext(),"c2");
+            newDownloader.downloadItemsImages("c2m1"); */
         } else {
             // not signed in
             startActivityForResult(
@@ -63,31 +57,40 @@ public class MainActivity extends BaseActivity {
                     AuthUI.getInstance()
                             .createSignInIntentBuilder()
                             .setProviders(AuthUI.EMAIL_PROVIDER)
+                            .setIsSmartLockEnabled(false)
                             .build(),
                     RC_SIGN_IN);
         }
-        showProgressDialog();
 
-       mDatabases.child("Courses").addListenerForSingleValueEvent(new ValueEventListener() {
+
+
+        File localfile = new File(getFilesDir(), "watermelon.jpg");
+        if (localfile.exists()) {
+            Toast.makeText(this, localfile.getPath().toString(), Toast.LENGTH_SHORT).show();
+        }
+        btnCourse = (Button) findViewById(R.id.btnCourse);
+        btnNewActivity = (Button)findViewById(R.id.btnNewActivity);
+        TextView tvNhap1 = (TextView)findViewById(R.id.tvnhap1);
+        TextView tvNhap2 = (TextView)findViewById(R.id.tvnhap2);
+        tvNhap1.setText(getResources().getDisplayMetrics().toString());
+        tvNhap2.setText(dpToPx(1) + " px");
+        btnCourse.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot courseSnapshot : dataSnapshot.getChildren()) {
-                Course course = courseSnapshot.getValue(Course.class);
-                 mCourses.add(course);
-                    Toast.makeText(MainActivity.this, " " + course.getCourseimage() + " " + course.getCoursetotalitems()
-                            , Toast.LENGTH_SHORT).show();
-                }
-               // courseAdapter.notifyDataSetChanged();
-                hideProgressDialog();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, AddCourseActivity.class);
+                startActivity(intent);
+               // finish();
             }
         });
 
-
+        btnNewActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Intent intent = new Intent(MainActivity.this, MainNavigationActivity.class);
+                // startActivity(intent);
+              //  finish();
+            }
+        });
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -99,22 +102,15 @@ public class MainActivity extends BaseActivity {
                 finish();
             } else {
                 Toast.makeText(getApplicationContext(), "Sign in again", Toast.LENGTH_SHORT).show();
-                // user is not signed in. Maybe just wait for the user to press
-                // "sign in" again, or show a message
+
             }
         }
     }
-  /*  public void saveCourse (DataSnapshot dataSnapshot)
-    {
 
-        int position = 0;
-        for(DataSnapshot courseSnapshot: dataSnapshot.getChildren()){
-            mCourses.add(position,courseSnapshot.getKey().toString());
-            position++;
-        }
-        Toast.makeText(this,mCourses.size()+" is size ", Toast.LENGTH_SHORT).show();
-    }
-*/
+  private int dpToPx(int dp) {
+      Resources r = getResources();
 
+      return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
+  }
 
 }

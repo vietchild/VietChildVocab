@@ -10,23 +10,26 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     tools:context="vn.vietchild.vietchildvocab.MainActivity">
+    <TextView
+        android:id="@+id/tvnhap1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/tvnhap2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/btnCourse"
-        android:text="show text"
+        android:text="BUY A NEW COURSE"
         />
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvNewCourse"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnNewActivity"
+        android:text="NEXT"
+        />
 
-    </android.support.v7.widget.RecyclerView>
-<GridView
-    android:id="@+id/gridViewCourse"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
-
-</GridView>
 </LinearLayout>

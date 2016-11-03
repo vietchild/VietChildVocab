@@ -69,7 +69,7 @@ public class ItemCustomAdapter extends BaseAdapter {
             viewHolder = (ItemCustomAdapter.ViewHolder) convertView.getTag();
         }
         ItemAsked currentItem = (ItemAsked) getItem(position);
-        String mPath = "file://"+ mcontext.getFilesDir().getAbsolutePath()+"/"+ currentItem.getItemalias() + ".jpg";
+        String mPath = "file://"+ mcontext.getApplicationContext().getFilesDir().getAbsolutePath()+"/"+ currentItem.getItemalias() + ".jpg";
         Picasso.with(mcontext).load(mPath).transform(new RoundedCornersTransformation(15,0)).into(viewHolder.imageItem);
         viewHolder.imageItemTrue.setImageResource(R.drawable.itemtrue);
         viewHolder.imageItemFalse.setImageResource(R.drawable.itemfalse);
