@@ -30,6 +30,7 @@
 
     <!-- Auth -->
     <string name="user_change_password_fail">Can not change password. Try again please</string>
+    <string name="user_change_username_fail">Can not change username. Try again please</string>
     <string name="user_change_password_success">Profile changed successfully</string>
     <!-- Interface -->
     <string name="progressdialog_loading">Loading...</string>

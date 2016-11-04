@@ -41,8 +41,9 @@ Trong trường hợp người dùng không lưu thay đổi, isUpdate = False;
 public class UserSettingFragment extends Fragment {
     private final static String TAG = "UserSettingFragment";
     private onUpdateUserSetting mListener;
-    private FirebaseAuth mAuth;
     private int REQUEST_CODE_IMAGE = 1;
+    FirebaseAuth mAuth;
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     public UserSettingFragment() {
         // Required empty public constructor
     }
@@ -53,6 +54,7 @@ public class UserSettingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        mAuth = FirebaseAuth.getInstance();
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_user_setting, container, false);
         final Button btnEditProfile = (Button)view.findViewById(R.id.btnEditProfile);
@@ -63,17 +65,23 @@ public class UserSettingFragment extends Fragment {
         final EditText edtNewPassword = (EditText)view.findViewById(R.id.edtUserNewPassword);
         imgSettingUserAvatar = (ImageView)view.findViewById(R.id.imgSettingUserAvatar);
         Picasso.with(getActivity().getApplicationContext()).load(R.drawable.defaultavatar).into(imgSettingUserAvatar);
-      //  File mypath = new File(getActivity().getFilesDir().getAbsolutePath(), "myavatar.jpg");
-       // edtUserName.setText(mypath.toString());
+
 
         if (mAuth.getCurrentUser() != null) {
             File mypath = new File(getActivity().getFilesDir().getAbsolutePath(), "myavatar.jpg");
             if (mypath.exists()) {
-                //Picasso.with(getApplicationContext()).load(auth.getCurrentUser().getPhotoUrl()).transform(new CropCircleTransformation()).into(imgUserAvatar);
-                Picasso.with(getActivity().getApplicationContext()).load("file://" + getActivity().getFilesDir().getAbsolutePath() + "/myavatar.jpg").transform(new CropCircleTransformation()).memoryPolicy(MemoryPolicy.NO_CACHE).into(imgSettingUserAvatar);
+                Picasso.with(getActivity().getApplicationContext())
+                        .load("file://" + getActivity().getFilesDir().getAbsolutePath() + "/myavatar.jpg")
+                        .transform(new CropCircleTransformation())
+                        .memoryPolicy(MemoryPolicy.NO_CACHE)
+                        .into(imgSettingUserAvatar);
             } else {
                 if (mAuth.getCurrentUser().getPhotoUrl() != null) {
-                    Picasso.with(getActivity().getApplicationContext()).load(mAuth.getCurrentUser().getPhotoUrl()).transform(new CropCircleTransformation()).memoryPolicy(MemoryPolicy.NO_CACHE).into(imgSettingUserAvatar);
+                    Picasso.with(getActivity().getApplicationContext())
+                            .load(mAuth.getCurrentUser().getPhotoUrl())
+                            .transform(new CropCircleTransformation())
+                            .memoryPolicy(MemoryPolicy.NO_CACHE)
+                            .into(imgSettingUserAvatar);
                 }
             }
             imgSettingUserAvatar.setOnClickListener(new View.OnClickListener() {
@@ -84,7 +92,10 @@ public class UserSettingFragment extends Fragment {
                 }
             });
 
-            edtUserName.setText(mAuth.getCurrentUser().getDisplayName().toString());
+            if (mAuth.getCurrentUser().getDisplayName()!=null) {
+                edtUserName.setText(mAuth.getCurrentUser().getDisplayName());
+            }
+
             btnEditProfile.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -98,8 +109,7 @@ public class UserSettingFragment extends Fragment {
             btnSaveProfile.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    //Toast.makeText(getActivity().getApplicationContext(), "Da click save", Toast.LENGTH_SHORT).show();
+
                     if (!edtUserName.getText().toString().isEmpty()) {
                         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                 .setDisplayName(edtUserName.getText().toString())
@@ -109,7 +119,9 @@ public class UserSettingFragment extends Fragment {
                                                            @Override
                                                            public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
-                                    edtUserName.setText(user.getDisplayName().toString());
+                                    Toast.makeText(getActivity(), "DONE",
+                                            Toast.LENGTH_SHORT).show();
+                                    //edtUserName.setText(user.getDisplayName().toString());
                                     btnSaveProfile.setEnabled(false);
                                     edtUserName.setEnabled(false);
                                     edtNewPassword.setEnabled(false);
@@ -118,7 +130,7 @@ public class UserSettingFragment extends Fragment {
                                  Log.d(TAG, "User profile updated.");
                                  }
                                 if (!task.isSuccessful()) {
-                                Toast.makeText(getActivity(), getResources().getString(R.string.user_change_password_fail),
+                                Toast.makeText(getActivity(), getResources().getString(R.string.user_change_username_fail),
                                                                            Toast.LENGTH_SHORT).show();
                                 }
                                      }

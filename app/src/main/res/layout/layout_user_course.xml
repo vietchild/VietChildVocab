@@ -9,12 +9,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     card_view:cardCornerRadius="@dimen/cardview_course_radius"
-    android:elevation="@dimen/cardview_course_elevation"
+
     android:layout_margin="@dimen/cardview_course_margin">
 
     <RelativeLayout
        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@android:color/white">
         <ImageView
             android:layout_width="100dp"
             android:layout_height="160dp"

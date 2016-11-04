@@ -74,10 +74,12 @@ public class NewCourseAdapter extends RecyclerView.Adapter<NewCourseAdapter.Cour
         holder.textViewCourseDesc.setText(currentItem.getCoursedescription());
         holder.textViewCourseTotalItems.setText(currentItem.getCoursetotalitems() + " items");
 
-        Picasso.with(mContext).load(currentItem.getCourseimage().toString())
-                .transform(new RoundedCornersTransformation(15,0))
+        String mPath = "file://"+ mContext.getApplicationContext().getFilesDir().getAbsolutePath()+"/"+ currentItem.getCourseid() + ".jpg";
+        Picasso.with(mContext).load(mPath)
+                .transform(new RoundedCornersTransformation(6,0))
                 .fit()
                 .into(holder.imageCourse);
+
         holder.btnCourseBuy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
