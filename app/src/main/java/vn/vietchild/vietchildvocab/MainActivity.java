@@ -1,9 +1,10 @@
 package vn.vietchild.vietchildvocab;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
@@ -18,63 +19,55 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
-import java.util.ArrayList;
 
 import vn.vietchild.vietchildvocab.DownloadManager.VCDownloader;
-import vn.vietchild.vietchildvocab.Model.Course;
+import vn.vietchild.vietchildvocab.FileManager.JsonManager;
+import vn.vietchild.vietchildvocab.Model.AllCourses;
+import vn.vietchild.vietchildvocab.Model.AllCoursesThumb;
 
 public class MainActivity extends BaseActivity {
     private static final String TAG = "MainActivity";
+    private static final String fileCourseThumb = "coursethumb.json";
+    private SharedPreferences sharedPreferences;
+    private static final String SHARED_PREFERENCE_NAME = "setting";
     private   DatabaseReference mDatabases;
     private   FirebaseStorage mStorages;
     private   FirebaseAuth mAuths;
     private   int RC_SIGN_IN = 1980;
+    private boolean isNewUpdate = false;
 
     private Button btnCourse, btnNewActivity;
-    ArrayList<Course> mCourses;
+    AllCourses allcourse;
+    private String serverDataVersion;
 
     // TODO: KIỂM TRA VÀ BẮT UPDATE GOOGLE PLAY SERVICES
     // TODO: KIỂM TRA TÌNH TRẠNG INTERNET TRONG LẦN ĐẦU TIỀN MỞ MÁY
-    StorageReference mStorageRef;
-    DataSnapshot mdataSnapshot;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        showProgressDialog();
+        allcourse = new AllCourses();
         mAuths = FirebaseAuth.getInstance();
+        mDatabases= FirebaseDatabase.getInstance().getReference();
+        sharedPreferences = getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE);
+
+      //  SharedPreferences.Editor editor = sharedPreferences.edit();
+      //  editor.putString("lastupdate", lastUpdate);
+      //  editor.apply();
          //LOGIN
         if(mAuths.getCurrentUser()!= null) {
-            //TODO : ket noi database
-            showProgressDialog();
-            mDatabases = FirebaseDatabase.getInstance().getReference();
-            mDatabases.child("Courses").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    int i = 0;
-                    for (DataSnapshot courseList: dataSnapshot.getChildren() ){
-                        i=i+1;
-                        Course course = courseList.getValue(Course.class);
-                        File localfile = new File(getApplicationContext().getFilesDir(), course.getCourseid().toString() + ".jpg");
-                        if (!localfile.exists()) {
-                            VCDownloader downloadimage = new VCDownloader(getApplicationContext(),course.getCourseid());
-                            downloadimage.downloadCourseImages();
+          //TODO : ket noi database
 
-                            Toast.makeText(getApplicationContext(), "Download " + i , Toast.LENGTH_SHORT).show();
-                        }
-                    }
+            checkNewUpdate();
 
-                    hideProgressDialog();
-                }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                Log.e(TAG,"Can not download");
-                }
-            });
+
+
+
 
         } else {
             // not signed in
@@ -138,5 +131,62 @@ public class MainActivity extends BaseActivity {
 
       return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
   }
+
+  private void checkNewUpdate(){
+
+      final String dataversion = sharedPreferences.getString("lastupdate", "");
+      if (dataversion.isEmpty()) {
+         isNewUpdate=true;
+      } else
+      {
+
+          mDatabases.child("lastupdate").addListenerForSingleValueEvent(new ValueEventListener() {
+              @Override
+              public void onDataChange(DataSnapshot dataSnapshot) {
+                  serverDataVersion = dataSnapshot.getValue().toString();
+                  if (!dataversion.equals(serverDataVersion)){
+                      isNewUpdate = true;
+                  }
+                  else {
+                      isNewUpdate = false;
+                  }
+              }
+
+              @Override
+              public void onCancelled(DatabaseError databaseError) {
+
+              }
+          });
+      }
+
+      if (isNewUpdate) {
+          mDatabases.addListenerForSingleValueEvent(new ValueEventListener() {
+              @Override
+              public void onDataChange(DataSnapshot dataSnapshot) {
+                  AllCoursesThumb courseThumbnail = dataSnapshot.getValue(AllCoursesThumb.class);
+                  JsonManager jsonFile = new JsonManager(getApplicationContext());
+                  jsonFile.writeCoursesThumbToJSON(courseThumbnail,fileCourseThumb);
+                  //for (Course mcourse: courseThumbnail.getCourses().get)
+                  for (String keyCourse: courseThumbnail.getCourses().keySet()){
+                      VCDownloader downloadCourseImage = new VCDownloader(getApplicationContext(),keyCourse);
+                      downloadCourseImage.downloadCourseImages();
+                  }
+                  SharedPreferences.Editor editor = sharedPreferences.edit();
+                  editor.putString("lastupdate", serverDataVersion );
+                  editor.apply();
+
+                  hideProgressDialog();
+              }
+              @Override
+              public void onCancelled(DatabaseError databaseError) {
+              }
+          });
+
+      }
+
+
+
+  }
+
 
 }

@@ -24,7 +24,6 @@ public class Module implements Parcelable{
         this.modulevideo = modulevideo;
         this.moduleimage = moduleimage;
         this.moduledescription = moduledescription;
-
         this.items = items;
     }
 

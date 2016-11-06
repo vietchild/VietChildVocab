@@ -22,7 +22,7 @@ import java.util.Map;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 import vn.vietchild.vietchildvocab.DownloadManager.VCDownloader;
-import vn.vietchild.vietchildvocab.Model.Course;
+import vn.vietchild.vietchildvocab.Model.CourseWithoutModule;
 import vn.vietchild.vietchildvocab.R;
 
 /**
@@ -31,7 +31,7 @@ import vn.vietchild.vietchildvocab.R;
 
 public class NewCourseAdapter extends RecyclerView.Adapter<NewCourseAdapter.CourseViewHolder>{
     private static final String TAG = "rvNewCourseAdapter";
-    private List<Course> mNewCourse;
+    private List<CourseWithoutModule> mNewCourse;
 
     private Context mContext;
     private LayoutInflater mLayoutInflater;
@@ -52,7 +52,7 @@ public class NewCourseAdapter extends RecyclerView.Adapter<NewCourseAdapter.Cour
         }
     }
 
-    public NewCourseAdapter(Context mContext, List<Course> mNewCourse) {
+    public NewCourseAdapter(Context mContext, List<CourseWithoutModule> mNewCourse) {
         this.mContext = mContext;
         this.mNewCourse = mNewCourse;
         mLayoutInflater = LayoutInflater.from(mContext);
@@ -68,7 +68,7 @@ public class NewCourseAdapter extends RecyclerView.Adapter<NewCourseAdapter.Cour
 
     @Override
     public void onBindViewHolder(CourseViewHolder holder, final int position) {
-        final Course currentItem = mNewCourse.get(position);
+        final CourseWithoutModule currentItem = mNewCourse.get(position);
         holder.textViewCourseName.setText(currentItem.getCoursename());
         holder.textViewCoursePrice.setText("Price: " + currentItem.getCourseprice() + " coin");
         holder.textViewCourseDesc.setText(currentItem.getCoursedescription());
@@ -101,7 +101,7 @@ public class NewCourseAdapter extends RecyclerView.Adapter<NewCourseAdapter.Cour
         return mNewCourse.size();
     }
 
-    private void writeUserNewCourse(Course course) {
+    private void writeUserNewCourse(CourseWithoutModule course) {
 
         DatabaseReference mDatabases = FirebaseDatabase.getInstance().getReference();
         FirebaseStorage mStorages = FirebaseStorage.getInstance();
@@ -109,20 +109,20 @@ public class NewCourseAdapter extends RecyclerView.Adapter<NewCourseAdapter.Cour
         String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         // Ghi vào course vào Users/UserID/Courses/ với giá trị true
 
-        mDatabases.child("Stats").child("Courses").child(course.getCourseid().toString())
+        mDatabases.child("Stats").child("courses").child(course.getCourseid().toString())
                 .child("Users").child(userID).setValue(true);
         Map<String, Object> newCourse = course.toCourseMap();
 
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/Users/" + userID +"/Courses/" + course.getCourseid().toString(), true);
-        childUpdates.put("/Users/" + userID +"/userprogress/Courses/" + course.getCourseid().toString(), newCourse);
+        childUpdates.put("/Users/" + userID +"/courses/" + course.getCourseid().toString(), true);
+        childUpdates.put("/Users/" + userID +"/userprogress/courses/" + course.getCourseid().toString(), newCourse);
        // childUpdates.put("/Users/" + userID +"/userprogress/Courses/" + course.getCourseid().toString() + "/courselearneditems",Long.valueOf(0));
        // childUpdates.put("/Users/" + userID +"/userprogress/Courses/" + course.getCourseid().toString() + "/courseregisterđate", ServerValue.TIMESTAMP);
 
         mDatabases.updateChildren(childUpdates);
-        mDatabases.child("Users").child(userID).child("userprogress").child("Courses").child(course.getCourseid().toString())
+        mDatabases.child("Users").child(userID).child("userprogress").child("courses").child(course.getCourseid().toString())
                 .child("courselearneditems").setValue(Long.valueOf(0));
-        mDatabases.child("Users").child(userID).child("userprogress").child("Courses").child(course.getCourseid().toString())
+        mDatabases.child("Users").child(userID).child("userprogress").child("courses").child(course.getCourseid().toString())
                 .child("courseregisterdate").setValue(ServerValue.TIMESTAMP);
     }
 

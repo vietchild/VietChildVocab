@@ -1,8 +1,5 @@
 package vn.vietchild.vietchildvocab.Model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
@@ -13,55 +10,23 @@ import java.util.Map;
  * Created by Nguyen Phung Hung on 23/10/16.
  */
 @IgnoreExtraProperties
-public class Course implements Parcelable {
+public class Course {
 
-    public String coursename,courseimage,coursedescription,courseid;
+    public String coursename,coursedescription,courseid;
     public Long courseprice,coursetotalitems;
-    public Long coursescore = Long.valueOf(0);
-
+    HashMap<String,Module> modules;
 
     public Course() {
     }
 
-    public Course(String coursename, String courseimage, String coursedescription, String courseid, Long courseprice) {
+    public Course(String coursename, String coursedescription, String courseid, Long courseprice, Long coursetotalitems, HashMap<String, Module> modules) {
         this.coursename = coursename;
-        this.courseimage = courseimage;
         this.coursedescription = coursedescription;
         this.courseid = courseid;
         this.courseprice = courseprice;
+        this.coursetotalitems = coursetotalitems;
+        this.modules = modules;
     }
-
-    protected Course(Parcel in) {
-        coursename = in.readString();
-        courseimage = in.readString();
-        coursedescription = in.readString();
-        courseid = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(coursename);
-        dest.writeString(courseimage);
-        dest.writeString(coursedescription);
-        dest.writeString(courseid);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<Course> CREATOR = new Creator<Course>() {
-        @Override
-        public Course createFromParcel(Parcel in) {
-            return new Course(in);
-        }
-
-        @Override
-        public Course[] newArray(int size) {
-            return new Course[size];
-        }
-    };
 
     public String getCoursename() {
         return coursename;
@@ -69,22 +34,6 @@ public class Course implements Parcelable {
 
     public void setCoursename(String coursename) {
         this.coursename = coursename;
-    }
-
-    public Long getCourseprice() {
-        return courseprice;
-    }
-
-    public void setCourseprice(Long courseprice) {
-        this.courseprice = courseprice;
-    }
-
-    public String getCourseimage() {
-        return courseimage;
-    }
-
-    public void setCourseimage(String courseimage) {
-        this.courseimage = courseimage;
     }
 
     public String getCoursedescription() {
@@ -103,12 +52,28 @@ public class Course implements Parcelable {
         this.courseid = courseid;
     }
 
+    public Long getCourseprice() {
+        return courseprice;
+    }
+
+    public void setCourseprice(Long courseprice) {
+        this.courseprice = courseprice;
+    }
+
     public Long getCoursetotalitems() {
         return coursetotalitems;
     }
 
     public void setCoursetotalitems(Long coursetotalitems) {
         this.coursetotalitems = coursetotalitems;
+    }
+
+    public HashMap<String, Module> getModules() {
+        return modules;
+    }
+
+    public void setModules(HashMap<String, Module> modules) {
+        this.modules = modules;
     }
 
     // [START course_to_map]
@@ -119,7 +84,7 @@ public class Course implements Parcelable {
         result.put("coursename", coursename);
         result.put("coursedescription", coursedescription);
         result.put("coursetotalitems", coursetotalitems);
-        result.put("coursescore", coursescore);
+        result.put("modules",modules);
 
         return result;
     }

@@ -20,6 +20,7 @@ import com.google.firebase.storage.StorageReference;
 import java.io.File;
 import java.io.IOException;
 
+import vn.vietchild.vietchildvocab.Model.Item;
 import vn.vietchild.vietchildvocab.R;
 
 /**
@@ -49,12 +50,14 @@ public class VCDownloader {
     // Ghi vào course vào Users/UserID/Courses/ với giá trị true
 
     StorageReference courseImage = storageRef.child("Vocab/Images/"+ courseID + ".jpg");
+
     File localFile = new File(mContext.getApplicationContext().getFilesDir(), courseID + ".jpg");
     try {
         localFile.createNewFile();
         courseImage.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+
                 Log.i(TAG, "Download Course Image - OK" + courseID);
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -72,12 +75,11 @@ public class VCDownloader {
 
     public void downloadModulesImages () {
         //ArrayList<String> listModulesImages = new ArrayList<>();
-        mDatabases.child("Courses").child(courseID).child("Modules").addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabases.child("courses").child(courseID).child("modules").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot moduleImageName : dataSnapshot.getChildren()){
                     final String imageName = moduleImageName.getKey().toString();
-
                     StorageReference moduleImage = storageRef.child("Vocab/Images/"+ imageName + ".jpg");
                     File localFile = new File(mContext.getApplicationContext().getFilesDir(), imageName + ".jpg");
                     try {
@@ -85,6 +87,7 @@ public class VCDownloader {
                         moduleImage.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                             @Override
                             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+
                                 Log.i(TAG, "Downloaded successfully: " + imageName);
                             }
                         }).addOnFailureListener(new OnFailureListener() {
@@ -109,12 +112,13 @@ public class VCDownloader {
         });
     }
     public void downloadItemsImages (String moduleID) {
-          mDatabases.child("Courses").child(courseID).child("Modules").child(moduleID).child("Items")
+          mDatabases.child("courses").child(courseID).child("modules").child(moduleID).child("items")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot itemID : dataSnapshot.getChildren()){
-                            final String itemName = itemID.getKey().toString();
+                            Item item = itemID.getValue(Item.class) ;
+                            final String itemName = item.getItemalias();
                             StorageReference itemImage = storageRef.child("Vocab/Images/"+ itemName + ".jpg");
                             File localImageFile = new File(mContext.getApplicationContext().getFilesDir(), itemName + ".jpg");
                             try {
@@ -122,6 +126,7 @@ public class VCDownloader {
                                 itemImage.getFile(localImageFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                                     @Override
                                     public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+
                                         Log.i(TAG, "Downloaded successfully jpg: " + itemName);
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
