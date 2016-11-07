@@ -1,8 +1,5 @@
 package vn.vietchild.vietchildvocab.Model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.util.List;
@@ -11,57 +8,28 @@ import java.util.List;
  * Created by Nguyen Phung Hung on 24/10/16.
  */
 @IgnoreExtraProperties
-public class Module implements Parcelable{
-    String modulename, modulevideo,moduleimage,moduledescription;
+public class Module{
+    private String modulename, modulevideo,moduleimage,moduledescription,modulealias;
+    private int moduletotalitems,modulelearneditems;
+    private boolean modulepassed = false;
     int modulescore = 0;
     List<Item> items;
 
     public Module() {
     }
 
-    public Module(String modulename, String modulevideo, String moduleimage, String moduledescription, List<Item> items) {
+    public Module(String modulename, String modulevideo, String moduleimage, String moduledescription, String modulealias, int moduletotalitems, int modulelearneditems, boolean modulepassed, int modulescore, List<Item> items) {
         this.modulename = modulename;
         this.modulevideo = modulevideo;
         this.moduleimage = moduleimage;
         this.moduledescription = moduledescription;
+        this.modulealias = modulealias;
+        this.moduletotalitems = moduletotalitems;
+        this.modulelearneditems = modulelearneditems;
+        this.modulepassed = modulepassed;
+        this.modulescore = modulescore;
         this.items = items;
     }
-
-    protected Module(Parcel in) {
-        modulename = in.readString();
-        modulevideo = in.readString();
-        moduleimage = in.readString();
-        moduledescription = in.readString();
-        modulescore = in.readInt();
-        items = in.createTypedArrayList(Item.CREATOR);
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(modulename);
-        dest.writeString(modulevideo);
-        dest.writeString(moduleimage);
-        dest.writeString(moduledescription);
-        dest.writeInt(modulescore);
-        dest.writeTypedList(items);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<Module> CREATOR = new Creator<Module>() {
-        @Override
-        public Module createFromParcel(Parcel in) {
-            return new Module(in);
-        }
-
-        @Override
-        public Module[] newArray(int size) {
-            return new Module[size];
-        }
-    };
 
     public String getModulename() {
         return modulename;
@@ -93,6 +61,38 @@ public class Module implements Parcelable{
 
     public void setModuledescription(String moduledescription) {
         this.moduledescription = moduledescription;
+    }
+
+    public String getModulealias() {
+        return modulealias;
+    }
+
+    public void setModulealias(String modulealias) {
+        this.modulealias = modulealias;
+    }
+
+    public int getModuletotalitems() {
+        return moduletotalitems;
+    }
+
+    public void setModuletotalitems(int moduletotalitems) {
+        this.moduletotalitems = moduletotalitems;
+    }
+
+    public int getModulelearneditems() {
+        return modulelearneditems;
+    }
+
+    public void setModulelearneditems(int modulelearneditems) {
+        this.modulelearneditems = modulelearneditems;
+    }
+
+    public boolean isModulepassed() {
+        return modulepassed;
+    }
+
+    public void setModulepassed(boolean modulepassed) {
+        this.modulepassed = modulepassed;
     }
 
     public int getModulescore() {

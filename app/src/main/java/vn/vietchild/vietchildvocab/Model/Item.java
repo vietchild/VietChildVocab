@@ -14,6 +14,7 @@ public class Item implements Parcelable{
     String itemname;
     String itempronunciation;
     String itemdesc;
+    int itempostion = 561980;
 
     public Item() {
     }

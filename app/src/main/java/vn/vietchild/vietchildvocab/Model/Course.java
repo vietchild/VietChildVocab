@@ -12,19 +12,36 @@ import java.util.Map;
 @IgnoreExtraProperties
 public class Course {
 
-    public String coursename,coursedescription,courseid;
-    public Long courseprice,coursetotalitems;
+    private String coursename,coursedescription,courseid;
+
+    private int coursetotalitems;
+    private int courseprice = 0;
+    private int courselearneditems = 0;
+    private Long courseregisterdate = Long.valueOf(0);
+    private Long courselastlearn= Long.valueOf(0);;
+    private Boolean coursestatus = false;
+    private int coursenotifytime = 20;
+    private int courseitemperday = 5;
+    private int coursescore = 0;
+
     HashMap<String,Module> modules;
 
     public Course() {
     }
 
-    public Course(String coursename, String coursedescription, String courseid, Long courseprice, Long coursetotalitems, HashMap<String, Module> modules) {
+    public Course(String coursename, String coursedescription, String courseid, int courseprice, int coursetotalitems, int courselearneditems, int coursescore, Long courseregisterdate, Long courselastlearn, Boolean coursestatus, int coursenotifytime, int courseitemperday, HashMap<String, Module> modules) {
         this.coursename = coursename;
         this.coursedescription = coursedescription;
         this.courseid = courseid;
         this.courseprice = courseprice;
         this.coursetotalitems = coursetotalitems;
+        this.courselearneditems = courselearneditems;
+        this.coursescore = coursescore;
+        this.courseregisterdate = courseregisterdate;
+        this.courselastlearn = courselastlearn;
+        this.coursestatus = coursestatus;
+        this.coursenotifytime = coursenotifytime;
+        this.courseitemperday = courseitemperday;
         this.modules = modules;
     }
 
@@ -52,20 +69,76 @@ public class Course {
         this.courseid = courseid;
     }
 
-    public Long getCourseprice() {
+    public int getCourseprice() {
         return courseprice;
     }
 
-    public void setCourseprice(Long courseprice) {
+    public void setCourseprice(int courseprice) {
         this.courseprice = courseprice;
     }
 
-    public Long getCoursetotalitems() {
+    public int getCoursetotalitems() {
         return coursetotalitems;
     }
 
-    public void setCoursetotalitems(Long coursetotalitems) {
+    public void setCoursetotalitems(int coursetotalitems) {
         this.coursetotalitems = coursetotalitems;
+    }
+
+    public int getCourselearneditems() {
+        return courselearneditems;
+    }
+
+    public void setCourselearneditems(int courselearneditems) {
+        this.courselearneditems = courselearneditems;
+    }
+
+    public int getCoursescore() {
+        return coursescore;
+    }
+
+    public void setCoursescore(int coursescore) {
+        this.coursescore = coursescore;
+    }
+
+    public Long getCourseregisterdate() {
+        return courseregisterdate;
+    }
+
+    public void setCourseregisterdate(Long courseregisterdate) {
+        this.courseregisterdate = courseregisterdate;
+    }
+
+    public Long getCourselastlearn() {
+        return courselastlearn;
+    }
+
+    public void setCourselastlearn(Long courselastlearn) {
+        this.courselastlearn = courselastlearn;
+    }
+
+    public Boolean getCoursestatus() {
+        return coursestatus;
+    }
+
+    public void setCoursestatus(Boolean coursestatus) {
+        this.coursestatus = coursestatus;
+    }
+
+    public int getCoursenotifytime() {
+        return coursenotifytime;
+    }
+
+    public void setCoursenotifytime(int coursenotifytime) {
+        this.coursenotifytime = coursenotifytime;
+    }
+
+    public int getCourseitemperday() {
+        return courseitemperday;
+    }
+
+    public void setCourseitemperday(int courseitemperday) {
+        this.courseitemperday = courseitemperday;
     }
 
     public HashMap<String, Module> getModules() {
@@ -85,7 +158,6 @@ public class Course {
         result.put("coursedescription", coursedescription);
         result.put("coursetotalitems", coursetotalitems);
         result.put("modules",modules);
-
         return result;
     }
 // [END course_to_map]

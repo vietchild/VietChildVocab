@@ -21,11 +21,17 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import vn.vietchild.vietchildvocab.DownloadManager.VCDownloader;
 import vn.vietchild.vietchildvocab.FileManager.JsonManager;
 import vn.vietchild.vietchildvocab.Model.AllCourses;
 import vn.vietchild.vietchildvocab.Model.AllCoursesThumb;
+import vn.vietchild.vietchildvocab.Model.Course;
+import vn.vietchild.vietchildvocab.Model.Module;
+import vn.vietchild.vietchildvocab.SQLite.DatabaseHelper;
 
 public class MainActivity extends BaseActivity {
     private static final String TAG = "MainActivity";
@@ -36,8 +42,9 @@ public class MainActivity extends BaseActivity {
     private   FirebaseStorage mStorages;
     private   FirebaseAuth mAuths;
     private   int RC_SIGN_IN = 1980;
+    DatabaseHelper vc_db;
     private boolean isNewUpdate = false;
-
+    String dbpath;
     private Button btnCourse, btnNewActivity;
     AllCourses allcourse;
     private String serverDataVersion;
@@ -46,6 +53,7 @@ public class MainActivity extends BaseActivity {
     // TODO: KIỂM TRA TÌNH TRẠNG INTERNET TRONG LẦN ĐẦU TIỀN MỞ MÁY
 
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -54,16 +62,58 @@ public class MainActivity extends BaseActivity {
         mAuths = FirebaseAuth.getInstance();
         mDatabases= FirebaseDatabase.getInstance().getReference();
         sharedPreferences = getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE);
+        vc_db = DatabaseHelper.getInstance(getApplicationContext());
 
-      //  SharedPreferences.Editor editor = sharedPreferences.edit();
-      //  editor.putString("lastupdate", lastUpdate);
-      //  editor.apply();
-         //LOGIN
+        //String databasepath = getApplicationContext().getDatabasePath();
+
+        File database  = getApplicationContext().getDatabasePath("vocabdata.db");
+        if (database.exists()) {
+
+            Toast.makeText(this, "DATABASE EXIT", Toast.LENGTH_SHORT).show();
+            database.delete();
+        }
+
+        else {
+            Toast.makeText(this, "DATABASE NOT EXIT", Toast.LENGTH_SHORT).show();
+        }
+
+
+
+
+
+
         if(mAuths.getCurrentUser()!= null) {
           //TODO : ket noi database
+            final List<Course> courseList = new ArrayList<Course>();
+          //  checkNewUpdate();
+            mDatabases.child("courses").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                 for (DataSnapshot coursesnapshot: dataSnapshot.getChildren() ) {
+                     Course course = coursesnapshot.getValue(Course.class);
+                     vc_db.addOrUpdateCourse(course);
 
-            checkNewUpdate();
+                      Set<String> strings = course.getModules().keySet();
 
+                   for (String keysetModule : strings )
+                     {
+                         Toast.makeText(MainActivity.this, "Module: " + keysetModule, Toast.LENGTH_SHORT).show();
+                         Module module = course.getModules().get(keysetModule);
+                         vc_db.addOrUpdateModule(module,course.getCourseid().toString());
+                     }
+
+                     courseList.add(course);
+
+                 }
+
+                    hideProgressDialog();
+
+                    Toast.makeText(MainActivity.this, "DONE", Toast.LENGTH_SHORT).show();
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
 
 
 
@@ -83,10 +133,6 @@ public class MainActivity extends BaseActivity {
 
 
 
-        File localfile = new File(getFilesDir(), "watermelon.jpg");
-        if (localfile.exists()) {
-            Toast.makeText(this, localfile.getPath().toString(), Toast.LENGTH_SHORT).show();
-        }
         btnCourse = (Button) findViewById(R.id.btnCourse);
         btnNewActivity = (Button)findViewById(R.id.btnNewActivity);
         TextView tvNhap1 = (TextView)findViewById(R.id.tvnhap1);
