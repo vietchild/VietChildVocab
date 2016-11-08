@@ -20,13 +20,13 @@
         >
         <ImageView
             android:layout_width="100dp"
-            android:layout_height="160dp"
+            android:layout_height="150dp"
             android:clickable="true"
             android:scaleType="fitCenter"
             android:src="@drawable/logovietchild"
             android:id="@+id/ivUserCourse"
-            android:cropToPadding="false"
-            android:adjustViewBounds="false" />
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"/>
 
         <TextView
             android:text="Course Name"

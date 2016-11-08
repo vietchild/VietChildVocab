@@ -11,14 +11,14 @@ import java.util.List;
 public class Module{
     private String modulename, modulevideo,moduleimage,moduledescription,modulealias;
     private int moduletotalitems,modulelearneditems;
-    private boolean modulepassed = false;
+    private int modulepassed = 0;
     int modulescore = 0;
     List<Item> items;
 
     public Module() {
     }
 
-    public Module(String modulename, String modulevideo, String moduleimage, String moduledescription, String modulealias, int moduletotalitems, int modulelearneditems, boolean modulepassed, int modulescore, List<Item> items) {
+    public Module(String modulename, String modulevideo, String moduleimage, String moduledescription, String modulealias, int moduletotalitems, int modulelearneditems, int modulepassed, int modulescore, List<Item> items) {
         this.modulename = modulename;
         this.modulevideo = modulevideo;
         this.moduleimage = moduleimage;
@@ -87,11 +87,11 @@ public class Module{
         this.modulelearneditems = modulelearneditems;
     }
 
-    public boolean isModulepassed() {
+    public int isModulepassed() {
         return modulepassed;
     }
 
-    public void setModulepassed(boolean modulepassed) {
+    public void setModulepassed(int modulepassed) {
         this.modulepassed = modulepassed;
     }
 

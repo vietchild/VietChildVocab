@@ -3,51 +3,50 @@ package vn.vietchild.vietchildvocab;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.TypedValue;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
+import android.support.annotation.NonNull;
+import android.util.Log;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
 import vn.vietchild.vietchildvocab.DownloadManager.VCDownloader;
-import vn.vietchild.vietchildvocab.FileManager.JsonManager;
-import vn.vietchild.vietchildvocab.Model.AllCourses;
-import vn.vietchild.vietchildvocab.Model.AllCoursesThumb;
 import vn.vietchild.vietchildvocab.Model.Course;
 import vn.vietchild.vietchildvocab.Model.Module;
 import vn.vietchild.vietchildvocab.SQLite.DatabaseHelper;
 
 public class MainActivity extends BaseActivity {
     private static final String TAG = "MainActivity";
-    private static final String fileCourseThumb = "coursethumb.json";
     private SharedPreferences sharedPreferences;
     private static final String SHARED_PREFERENCE_NAME = "setting";
     private   DatabaseReference mDatabases;
-    private   FirebaseStorage mStorages;
+    private   FirebaseStorage mStorages = FirebaseStorage.getInstance();
+    private StorageReference storageRef = mStorages.getReferenceFromUrl("gs://vietchildvocab.appspot.com");
     private   FirebaseAuth mAuths;
-    private   int RC_SIGN_IN = 1980;
-    DatabaseHelper vc_db;
-    private boolean isNewUpdate = false;
-    String dbpath;
-    private Button btnCourse, btnNewActivity;
-    AllCourses allcourse;
-    private String serverDataVersion;
+    private   int RC_SIGN_IN = 19;
+    private List<Course> allCourse;
+    private List<Course> unRegisterdCourse;
+    private ImageView ivMainBanner;
+
+    private String serverVersion;
 
     // TODO: KIỂM TRA VÀ BẮT UPDATE GOOGLE PLAY SERVICES
     // TODO: KIỂM TRA TÌNH TRẠNG INTERNET TRONG LẦN ĐẦU TIỀN MỞ MÁY
@@ -58,18 +57,30 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         showProgressDialog();
-        allcourse = new AllCourses();
+        ivMainBanner = (ImageView)findViewById(R.id.imageViewMainBanner);
+
+        File imgMainBanner = new File(getApplicationContext().getFilesDir(), "mainbanner.jpg");
+        if (imgMainBanner.exists()) {
+            String mPath = "file://"+ getApplicationContext().getFilesDir().getAbsolutePath()+"/"+ "mainbanner.jpg";
+            Picasso.with(getApplicationContext())
+                    .load(mPath)
+                    .fit()
+                    .into(ivMainBanner);
+        }
+
         mAuths = FirebaseAuth.getInstance();
         mDatabases= FirebaseDatabase.getInstance().getReference();
         sharedPreferences = getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE);
         vc_db = DatabaseHelper.getInstance(getApplicationContext());
 
-        //String databasepath = getApplicationContext().getDatabasePath();
 
+/*
         File database  = getApplicationContext().getDatabasePath("vocabdata.db");
         if (database.exists()) {
 
             Toast.makeText(this, "DATABASE EXIT", Toast.LENGTH_SHORT).show();
+          //  allCourse =    vc_db.dbGetAllCourseThumb();
+
             database.delete();
         }
 
@@ -77,46 +88,13 @@ public class MainActivity extends BaseActivity {
             Toast.makeText(this, "DATABASE NOT EXIT", Toast.LENGTH_SHORT).show();
         }
 
-
-
+*/
 
 
 
         if(mAuths.getCurrentUser()!= null) {
           //TODO : ket noi database
-            final List<Course> courseList = new ArrayList<Course>();
-          //  checkNewUpdate();
-            mDatabases.child("courses").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                 for (DataSnapshot coursesnapshot: dataSnapshot.getChildren() ) {
-                     Course course = coursesnapshot.getValue(Course.class);
-                     vc_db.addOrUpdateCourse(course);
-
-                      Set<String> strings = course.getModules().keySet();
-
-                   for (String keysetModule : strings )
-                     {
-                         Toast.makeText(MainActivity.this, "Module: " + keysetModule, Toast.LENGTH_SHORT).show();
-                         Module module = course.getModules().get(keysetModule);
-                         vc_db.addOrUpdateModule(module,course.getCourseid().toString());
-                     }
-
-                     courseList.add(course);
-
-                 }
-
-                    hideProgressDialog();
-
-                    Toast.makeText(MainActivity.this, "DONE", Toast.LENGTH_SHORT).show();
-                }
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                }
-            });
-
-
-
+           checkNewUpdate();
 
 
         } else {
@@ -133,29 +111,6 @@ public class MainActivity extends BaseActivity {
 
 
 
-        btnCourse = (Button) findViewById(R.id.btnCourse);
-        btnNewActivity = (Button)findViewById(R.id.btnNewActivity);
-        TextView tvNhap1 = (TextView)findViewById(R.id.tvnhap1);
-        TextView tvNhap2 = (TextView)findViewById(R.id.tvnhap2);
-        tvNhap1.setText(getResources().getDisplayMetrics().toString());
-        tvNhap2.setText(dpToPx(1) + " px");
-        btnCourse.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, AddCourseActivity.class);
-                startActivity(intent);
-               // finish();
-            }
-        });
-
-        btnNewActivity.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), NavigationActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -172,67 +127,95 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-  private int dpToPx(int dp) {
-      Resources r = getResources();
-
-      return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
-  }
 
   private void checkNewUpdate(){
 
-      final String dataversion = sharedPreferences.getString("lastupdate", "");
-      if (dataversion.isEmpty()) {
-         isNewUpdate=true;
-      } else
-      {
-
-          mDatabases.child("lastupdate").addListenerForSingleValueEvent(new ValueEventListener() {
+      final String clientVersion = sharedPreferences.getString("clientVersion", "");
+     // final String clientVersion = "";
+      mDatabases.child("lastupdate").addListenerForSingleValueEvent(new ValueEventListener() {
               @Override
               public void onDataChange(DataSnapshot dataSnapshot) {
-                  serverDataVersion = dataSnapshot.getValue().toString();
-                  if (!dataversion.equals(serverDataVersion)){
-                      isNewUpdate = true;
+                  serverVersion = dataSnapshot.getValue().toString();
+
+                  if (!clientVersion.equals(serverVersion)){
+                      updateCourseDatabase();
+                      downloadBanners("mainbanner.jpg");
+                      downloadBanners("headbanner.jpg");
+                      SharedPreferences.Editor editor = sharedPreferences.edit();
+                      editor.putString("clientVersion", serverVersion );
+                      editor.apply();
+                      String clientVersio = sharedPreferences.getString("clientVersion","");
+                      Toast.makeText(MainActivity.this, "Updated", Toast.LENGTH_SHORT).show();
                   }
-                  else {
-                      isNewUpdate = false;
-                  }
-              }
-
-              @Override
-              public void onCancelled(DatabaseError databaseError) {
-
-              }
-          });
-      }
-
-      if (isNewUpdate) {
-          mDatabases.addListenerForSingleValueEvent(new ValueEventListener() {
-              @Override
-              public void onDataChange(DataSnapshot dataSnapshot) {
-                  AllCoursesThumb courseThumbnail = dataSnapshot.getValue(AllCoursesThumb.class);
-                  JsonManager jsonFile = new JsonManager(getApplicationContext());
-                  jsonFile.writeCoursesThumbToJSON(courseThumbnail,fileCourseThumb);
-                  //for (Course mcourse: courseThumbnail.getCourses().get)
-                  for (String keyCourse: courseThumbnail.getCourses().keySet()){
-                      VCDownloader downloadCourseImage = new VCDownloader(getApplicationContext(),keyCourse);
-                      downloadCourseImage.downloadCourseImages();
-                  }
-                  SharedPreferences.Editor editor = sharedPreferences.edit();
-                  editor.putString("lastupdate", serverDataVersion );
-                  editor.apply();
-
+                  else
+                  {
                   hideProgressDialog();
+                  Intent intent = new Intent(getApplicationContext(), NavigationActivity.class);
+                  startActivity(intent);
+                  finish();
+                  }
               }
+
               @Override
               public void onCancelled(DatabaseError databaseError) {
+
               }
           });
-
-      }
 
 
 
   }
 
+    private void updateCourseDatabase (){
+        mDatabases.child("courses").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot coursesnapshot: dataSnapshot.getChildren() ) {
+                    Course course = coursesnapshot.getValue(Course.class);
+                    VCDownloader downloadCourseImage = new VCDownloader(getApplicationContext(),course.getCourseid());
+                    downloadCourseImage.downloadCourseImages();
+                    vc_db.dbAddOrUpdateCourse(course);
+                    Set<String> strings = course.getModules().keySet();
+                    for (String keysetModule : strings )
+                    {
+                        Module module = course.getModules().get(keysetModule);
+                        vc_db.dbAddOrUpdateModule(module,course.getCourseid().toString());
+                    }
+                }
+                hideProgressDialog();
+                Intent intent = new Intent(getApplicationContext(), NavigationActivity.class);
+                startActivity(intent);
+                finish();
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
 
+    public void downloadBanners(final String filename) {
+        // Ghi vào course vào Users/UserID/Courses/ với giá trị true
+
+        StorageReference mainbanner = storageRef.child("Vocab/Banners/" + filename);
+
+        File localFile = new File(getApplicationContext().getFilesDir(), filename);
+        try {
+            localFile.createNewFile();
+            mainbanner.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+
+                    Log.i(TAG, "Download Image - OK:  " + filename);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle any errors
+                    Log.e(TAG, "Download Image - FAIL" + filename);
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

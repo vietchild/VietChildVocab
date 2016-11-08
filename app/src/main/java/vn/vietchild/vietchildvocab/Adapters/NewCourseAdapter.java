@@ -1,7 +1,12 @@
 package vn.vietchild.vietchildvocab.Adapters;
 
+import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,18 +17,20 @@ import android.widget.TextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
 import com.google.firebase.storage.FirebaseStorage;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
-import vn.vietchild.vietchildvocab.DownloadManager.VCDownloader;
-import vn.vietchild.vietchildvocab.Model.CourseWithoutModule;
+import vn.vietchild.vietchildvocab.Model.Course;
+import vn.vietchild.vietchildvocab.NavigationActivity;
 import vn.vietchild.vietchildvocab.R;
+import vn.vietchild.vietchildvocab.SQLite.DatabaseHelper;
 
 /**
  * Created by Nguyen Phung Hung on 29/10/16.
@@ -31,10 +38,24 @@ import vn.vietchild.vietchildvocab.R;
 
 public class NewCourseAdapter extends RecyclerView.Adapter<NewCourseAdapter.CourseViewHolder>{
     private static final String TAG = "rvNewCourseAdapter";
-    private List<CourseWithoutModule> mNewCourse;
+    private List<Course> mNewCourse;
 
     private Context mContext;
     private LayoutInflater mLayoutInflater;
+
+    /***** Creating OnItemClickListener *****/
+
+    // Define listener member variable
+    private OnItemClickListener listener;
+    // Define the listener interface
+    public interface OnItemClickListener {
+        void onItemClick(View itemView, int position);
+    }
+    // Define the method that allows the parent activity or fragment to define the listener
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
+
 
     public class CourseViewHolder extends RecyclerView.ViewHolder {
         TextView textViewCourseName, textViewCoursePrice, textViewCourseDesc, textViewCourseTotalItems ;
@@ -49,10 +70,22 @@ public class NewCourseAdapter extends RecyclerView.Adapter<NewCourseAdapter.Cour
             textViewCourseTotalItems = (TextView)view.findViewById(R.id.textViewCourseTotalItems);
             imageCourse = (ImageView)view.findViewById(R.id.imageViewCourse);
             btnCourseBuy = (Button)view.findViewById(R.id.btnCourseBuy);
+            btnCourseBuy.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // Triggers click upwards to the adapter on click
+                    if (listener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            listener.onItemClick(itemView, position);
+                        }
+                    }
+                }
+            });
         }
     }
 
-    public NewCourseAdapter(Context mContext, List<CourseWithoutModule> mNewCourse) {
+    public NewCourseAdapter(Context mContext, List<Course> mNewCourse) {
         this.mContext = mContext;
         this.mNewCourse = mNewCourse;
         mLayoutInflater = LayoutInflater.from(mContext);
@@ -68,7 +101,7 @@ public class NewCourseAdapter extends RecyclerView.Adapter<NewCourseAdapter.Cour
 
     @Override
     public void onBindViewHolder(CourseViewHolder holder, final int position) {
-        final CourseWithoutModule currentItem = mNewCourse.get(position);
+        final Course currentItem = mNewCourse.get(position);
         holder.textViewCourseName.setText(currentItem.getCoursename());
         holder.textViewCoursePrice.setText("Price: " + currentItem.getCourseprice() + " coin");
         holder.textViewCourseDesc.setText(currentItem.getCoursedescription());
@@ -80,18 +113,16 @@ public class NewCourseAdapter extends RecyclerView.Adapter<NewCourseAdapter.Cour
                 .fit()
                 .into(holder.imageCourse);
 
-        holder.btnCourseBuy.setOnClickListener(new View.OnClickListener() {
+        /*holder.btnCourseBuy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                writeUserNewCourse(currentItem);
-                VCDownloader newDownloader = new VCDownloader(mContext,currentItem.getCourseid().toString());
-                newDownloader.downloadCourseImages();
-                newDownloader.downloadModulesImages();
+
+
 
 
             }
-        });
+        }); */
 
     }
 
@@ -101,30 +132,6 @@ public class NewCourseAdapter extends RecyclerView.Adapter<NewCourseAdapter.Cour
         return mNewCourse.size();
     }
 
-    private void writeUserNewCourse(CourseWithoutModule course) {
-
-        DatabaseReference mDatabases = FirebaseDatabase.getInstance().getReference();
-        FirebaseStorage mStorages = FirebaseStorage.getInstance();
-        FirebaseAuth mAuths = FirebaseAuth.getInstance();
-        String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        // Ghi vào course vào Users/UserID/Courses/ với giá trị true
-
-        mDatabases.child("Stats").child("courses").child(course.getCourseid().toString())
-                .child("Users").child(userID).setValue(true);
-        Map<String, Object> newCourse = course.toCourseMap();
-
-        Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/Users/" + userID +"/courses/" + course.getCourseid().toString(), true);
-        childUpdates.put("/Users/" + userID +"/userprogress/courses/" + course.getCourseid().toString(), newCourse);
-       // childUpdates.put("/Users/" + userID +"/userprogress/Courses/" + course.getCourseid().toString() + "/courselearneditems",Long.valueOf(0));
-       // childUpdates.put("/Users/" + userID +"/userprogress/Courses/" + course.getCourseid().toString() + "/courseregisterđate", ServerValue.TIMESTAMP);
-
-        mDatabases.updateChildren(childUpdates);
-        mDatabases.child("Users").child(userID).child("userprogress").child("courses").child(course.getCourseid().toString())
-                .child("courselearneditems").setValue(Long.valueOf(0));
-        mDatabases.child("Users").child(userID).child("userprogress").child("courses").child(course.getCourseid().toString())
-                .child("courseregisterdate").setValue(ServerValue.TIMESTAMP);
-    }
 
 
 }

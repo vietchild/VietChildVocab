@@ -14,16 +14,17 @@ public class Item implements Parcelable{
     String itemname;
     String itempronunciation;
     String itemdesc;
-    int itempostion = 561980;
+    int itemposition;
 
     public Item() {
     }
 
-    public Item(String itemalias, String itemname, String itempronunciation, String itemdesc) {
+    public Item(String itemalias, String itemname, String itempronunciation, String itemdesc, int itemposition) {
         this.itemalias = itemalias;
         this.itemname = itemname;
         this.itempronunciation = itempronunciation;
         this.itemdesc = itemdesc;
+        this.itemposition = itemposition;
     }
 
     protected Item(Parcel in) {
@@ -31,6 +32,7 @@ public class Item implements Parcelable{
         itemname = in.readString();
         itempronunciation = in.readString();
         itemdesc = in.readString();
+        itemposition = in.readInt();
     }
 
     @Override
@@ -39,6 +41,7 @@ public class Item implements Parcelable{
         dest.writeString(itemname);
         dest.writeString(itempronunciation);
         dest.writeString(itemdesc);
+        dest.writeInt(itemposition);
     }
 
     @Override
@@ -88,5 +91,13 @@ public class Item implements Parcelable{
 
     public void setItemdesc(String itemdesc) {
         this.itemdesc = itemdesc;
+    }
+
+    public int getItemposition() {
+        return itemposition;
+    }
+
+    public void setItemposition(int itemposition) {
+        this.itemposition = itemposition;
     }
 }

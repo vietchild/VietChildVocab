@@ -19,7 +19,7 @@ public class Course {
     private int courselearneditems = 0;
     private Long courseregisterdate = Long.valueOf(0);
     private Long courselastlearn= Long.valueOf(0);;
-    private Boolean coursestatus = false;
+    private int coursestatus = 0;
     private int coursenotifytime = 20;
     private int courseitemperday = 5;
     private int coursescore = 0;
@@ -29,7 +29,7 @@ public class Course {
     public Course() {
     }
 
-    public Course(String coursename, String coursedescription, String courseid, int courseprice, int coursetotalitems, int courselearneditems, int coursescore, Long courseregisterdate, Long courselastlearn, Boolean coursestatus, int coursenotifytime, int courseitemperday, HashMap<String, Module> modules) {
+    public Course(String coursename, String coursedescription, String courseid, int courseprice, int coursetotalitems, int courselearneditems, int coursescore, Long courseregisterdate, Long courselastlearn, int coursestatus, int coursenotifytime, int courseitemperday, HashMap<String, Module> modules) {
         this.coursename = coursename;
         this.coursedescription = coursedescription;
         this.courseid = courseid;
@@ -117,11 +117,11 @@ public class Course {
         this.courselastlearn = courselastlearn;
     }
 
-    public Boolean getCoursestatus() {
+    public int getCoursestatus() {
         return coursestatus;
     }
 
-    public void setCoursestatus(Boolean coursestatus) {
+    public void setCoursestatus(int coursestatus) {
         this.coursestatus = coursestatus;
     }
 
