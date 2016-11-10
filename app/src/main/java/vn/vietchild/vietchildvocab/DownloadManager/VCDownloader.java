@@ -80,27 +80,35 @@ public class VCDownloader {
         mDatabases.child("courses").child(courseID).child("modules").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot moduleImageName : dataSnapshot.getChildren()){
+                for (DataSnapshot moduleImageName : dataSnapshot.getChildren()) {
                     final String imageName = moduleImageName.getKey().toString();
-                    StorageReference moduleImage = storageRef.child("Vocab/Images/"+ imageName + ".jpg");
-                    File localFile = new File(mContext.getApplicationContext().getFilesDir(), imageName + ".jpg");
-                    try {
-                        localFile.createNewFile();
-                        moduleImage.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
 
-                                Log.i(TAG, "Downloaded successfully: " + imageName);
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception exception) {
-                                // Handle any errors
-                                Log.e(TAG, "Download Course Image - FAIL");
-                            }
-                        });
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    File localFile = new File(mContext.getApplicationContext().getFilesDir(), imageName + ".jpg");
+                    if (!localFile.exists()) {
+                        StorageReference moduleImage = storageRef.child("Vocab/Images/" + imageName + ".jpg");
+
+                        try {
+                            localFile.createNewFile();
+                            moduleImage.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+
+                                    Log.i(TAG, "Downloaded successfully: " + imageName);
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+                                    // Handle any errors
+                                    Log.e(TAG, "Download Course Image - FAIL");
+                                }
+                            });
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                    else {
+                        Log.i(TAG, "Module image: " + imageName + " exists");
                     }
 
                 }
@@ -118,35 +126,43 @@ public class VCDownloader {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot itemID : dataSnapshot.getChildren()){
-                            Item item = itemID.getValue(Item.class) ;
+                        for (DataSnapshot itemID : dataSnapshot.getChildren()) {
+                            Item item = itemID.getValue(Item.class);
                             final String itemName = item.getItemalias();
-                            StorageReference itemImage = storageRef.child("Vocab/Images/"+ itemName + ".jpg");
                             File localImageFile = new File(mContext.getApplicationContext().getFilesDir(), itemName + ".jpg");
-                            try {
-                                localImageFile.createNewFile();
-                                itemImage.getFile(localImageFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                                    @Override
-                                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
 
-                                        Log.i(TAG, "Downloaded successfully jpg: " + itemName);
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception exception) {
-                                        // Handle any errors
-                                        Log.e(TAG, "Download Course Image - FAIL");
-                                    }
-                                });
-                            } catch (IOException e) {
-                                e.printStackTrace();
+                            if (!localImageFile.exists()) {
+                                StorageReference itemImage = storageRef.child("Vocab/Images/" + itemName + ".jpg");
+
+                                try {
+                                    localImageFile.createNewFile();
+                                    itemImage.getFile(localImageFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                        @Override
+                                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+
+                                            Log.i(TAG, "Downloaded successfully jpg: " + itemName);
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception exception) {
+                                            // Handle any errors
+                                            Log.e(TAG, "Download Course Image - FAIL");
+                                        }
+                                    });
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                             }
-
-                            StorageReference itemAudio = storageRef.child("Vocab/Sound/"+ itemName + ".mp3");
+                            else {
+                                Log.i(TAG, "Item image: " + itemName + " exists");
+                            }
                             File localAudioFile = new File(mContext.getApplicationContext().getFilesDir(), itemName + ".mp3");
+                            if (!localAudioFile.exists()){
+                            StorageReference itemAudio = storageRef.child("Vocab/Sound/" + itemName + ".mp3");
+
                             try {
                                 localAudioFile.createNewFile();
-                                itemImage.getFile(localAudioFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                itemAudio.getFile(localAudioFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                                     @Override
                                     public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                                         Log.i(TAG, "Downloaded successfully mp3: " + itemName);
@@ -160,6 +176,10 @@ public class VCDownloader {
                                 });
                             } catch (IOException e) {
                                 e.printStackTrace();
+                                }
+                            }
+                            else {
+                                Log.i(TAG, "Item audio: " + itemName + " exists");
                             }
                         }
                         Toast.makeText(mContext, mContext.getResources().getString(R.string.added_new_module) , Toast.LENGTH_SHORT).show();

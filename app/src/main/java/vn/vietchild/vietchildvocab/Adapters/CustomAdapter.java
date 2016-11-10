@@ -9,6 +9,9 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.storage.FirebaseStorage;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -28,6 +31,9 @@ public class CustomAdapter extends BaseAdapter {
     Context mcontext;
     List<Scores> arrayWords;
     LayoutInflater layoutInflater;
+    private DatabaseReference mDatabases;
+    private FirebaseStorage mStorages;
+    private FirebaseAuth mAuths;
 
     public CustomAdapter(Context mcontext, List<Scores> arrayWords) {
         this.mcontext = mcontext;

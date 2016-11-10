@@ -174,6 +174,7 @@ public class MainActivity extends BaseActivity {
                     Course course = coursesnapshot.getValue(Course.class);
                     VCDownloader downloadCourseImage = new VCDownloader(getApplicationContext(),course.getCourseid());
                     downloadCourseImage.downloadCourseImages();
+
                     vc_db.dbAddOrUpdateCourse(course);
                     Set<String> strings = course.getModules().keySet();
                     for (String keysetModule : strings )

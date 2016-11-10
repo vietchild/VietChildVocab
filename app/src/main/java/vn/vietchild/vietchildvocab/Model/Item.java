@@ -10,21 +10,31 @@ import com.google.firebase.database.IgnoreExtraProperties;
  */
 @IgnoreExtraProperties
 public class Item implements Parcelable{
-    String itemalias;
-    String itemname;
-    String itempronunciation;
-    String itemdesc;
-    int itemposition;
+    String itemalias; // Quan ly anh + sound cua item
+    String itemname;  // ten cua item
+    String itempronunciation;  // Cach doc
+    String itemdesc; // Cach su dung
+    int itemposition = 0; //vi tri cua item
+    int itempassed = 0;   // 0 - item chua hoc xong, 1 item da hoc xong
+    int itemlearning = 0; // 0 - item chua hoc, hoac hoc xong roi, 1 item dang hoc
+    int itemmistake = 0;  // so luong loi lien quan den item
+    long itemreceiveddate = 0; // ngay bat dau hoc item
+    long itempasseddate = 0;  // ngay hoc xong item
 
     public Item() {
     }
 
-    public Item(String itemalias, String itemname, String itempronunciation, String itemdesc, int itemposition) {
+    public Item(String itemalias, String itemname, String itempronunciation, String itemdesc, int itemposition, int itempassed, int itemlearning, int itemmistake, long itemreceiveddate, long itempasseddate) {
         this.itemalias = itemalias;
         this.itemname = itemname;
         this.itempronunciation = itempronunciation;
         this.itemdesc = itemdesc;
         this.itemposition = itemposition;
+        this.itempassed = itempassed;
+        this.itemlearning = itemlearning;
+        this.itemmistake = itemmistake;
+        this.itemreceiveddate = itemreceiveddate;
+        this.itempasseddate = itempasseddate;
     }
 
     protected Item(Parcel in) {
@@ -99,5 +109,45 @@ public class Item implements Parcelable{
 
     public void setItemposition(int itemposition) {
         this.itemposition = itemposition;
+    }
+
+    public int getItempassed() {
+        return itempassed;
+    }
+
+    public void setItempassed(int itempassed) {
+        this.itempassed = itempassed;
+    }
+
+    public int getItemlearning() {
+        return itemlearning;
+    }
+
+    public void setItemlearning(int itemlearning) {
+        this.itemlearning = itemlearning;
+    }
+
+    public int getItemmistake() {
+        return itemmistake;
+    }
+
+    public void setItemmistake(int itemmistake) {
+        this.itemmistake = itemmistake;
+    }
+
+    public long getItemreceiveddate() {
+        return itemreceiveddate;
+    }
+
+    public void setItemreceiveddate(long itemreceiveddate) {
+        this.itemreceiveddate = itemreceiveddate;
+    }
+
+    public long getItempasseddate() {
+        return itempasseddate;
+    }
+
+    public void setItempasseddate(long itempasseddate) {
+        this.itempasseddate = itempasseddate;
     }
 }

@@ -9,25 +9,34 @@ import java.util.List;
  */
 @IgnoreExtraProperties
 public class Module{
-    private String modulename, modulevideo,moduleimage,moduledescription,modulealias;
+    private String modulename, modulevideo,moduledescription,modulealias;
     private int moduletotalitems,modulelearneditems;
-    private int modulepassed = 0;
-    int modulescore = 0;
+    private int modulepassed = 0; // Trang thai module da hoc xong chua
+    int modulescore = 0; // Diem hien tai cua module
+    int moduleposition; // Vi tri cua module trong course
+    int modulescoretopass; // Diem can thiet de qua module va active module tiep theo
+    int moduleactive; // module co duoc active ko
+    long moduleactivedate; //ngay bat dau nhan module
+    long modulefinishdate; // ngay ket thuc module
     List<Item> items;
 
     public Module() {
     }
 
-    public Module(String modulename, String modulevideo, String moduleimage, String moduledescription, String modulealias, int moduletotalitems, int modulelearneditems, int modulepassed, int modulescore, List<Item> items) {
+    public Module(String modulename, String modulevideo, String moduledescription, String modulealias, int moduletotalitems, int modulelearneditems, int modulepassed, int modulescore, int moduleposition, int modulescoretopass, int moduleactive, long moduleactivedate, long modulefinishdate, List<Item> items) {
         this.modulename = modulename;
         this.modulevideo = modulevideo;
-        this.moduleimage = moduleimage;
         this.moduledescription = moduledescription;
         this.modulealias = modulealias;
         this.moduletotalitems = moduletotalitems;
         this.modulelearneditems = modulelearneditems;
         this.modulepassed = modulepassed;
         this.modulescore = modulescore;
+        this.moduleposition = moduleposition;
+        this.modulescoretopass = modulescoretopass;
+        this.moduleactive = moduleactive;
+        this.moduleactivedate = moduleactivedate;
+        this.modulefinishdate = modulefinishdate;
         this.items = items;
     }
 
@@ -45,14 +54,6 @@ public class Module{
 
     public void setModulevideo(String modulevideo) {
         this.modulevideo = modulevideo;
-    }
-
-    public String getModuleimage() {
-        return moduleimage;
-    }
-
-    public void setModuleimage(String moduleimage) {
-        this.moduleimage = moduleimage;
     }
 
     public String getModuledescription() {
@@ -87,7 +88,7 @@ public class Module{
         this.modulelearneditems = modulelearneditems;
     }
 
-    public int isModulepassed() {
+    public int getModulepassed() {
         return modulepassed;
     }
 
@@ -103,11 +104,51 @@ public class Module{
         this.modulescore = modulescore;
     }
 
+    public int getModuleposition() {
+        return moduleposition;
+    }
+
+    public void setModuleposition(int moduleposition) {
+        this.moduleposition = moduleposition;
+    }
+
+    public int getModulescoretopass() {
+        return modulescoretopass;
+    }
+
+    public void setModulescoretopass(int modulescoretopass) {
+        this.modulescoretopass = modulescoretopass;
+    }
+
+    public int getModuleactive() {
+        return moduleactive;
+    }
+
+    public void setModuleactive(int moduleactive) {
+        this.moduleactive = moduleactive;
+    }
+
     public List<Item> getItems() {
         return items;
     }
 
     public void setItems(List<Item> items) {
         this.items = items;
+    }
+
+    public long getModuleactivedate() {
+        return moduleactivedate;
+    }
+
+    public void setModuleactivedate(long moduleactivedate) {
+        this.moduleactivedate = moduleactivedate;
+    }
+
+    public long getModulefinishdate() {
+        return modulefinishdate;
+    }
+
+    public void setModulefinishdate(long modulefinishdate) {
+        this.modulefinishdate = modulefinishdate;
     }
 }
