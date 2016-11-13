@@ -3,6 +3,9 @@
     package="vn.vietchild.vietchildvocab">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
 
     <application
         android:allowBackup="true"
@@ -19,6 +22,7 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,9 +33,10 @@
         <activity android:name=".AddCourseActivity" />
         <activity
             android:name=".NavigationActivity"
-            android:label="@string/title_activity_navigation"
+            android:label=  "@string/title_activity_navigation"
             android:theme="@style/AppTheme" />
-        <activity android:name=".ModuleActivity"></activity>
+        <activity android:name=".ModuleActivity" />
+        <activity android:name=".ItemActivity"></activity>
     </application>
 
 </manifest>

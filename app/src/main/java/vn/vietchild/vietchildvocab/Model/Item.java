@@ -37,12 +37,18 @@ public class Item implements Parcelable{
         this.itempasseddate = itempasseddate;
     }
 
+
     protected Item(Parcel in) {
         itemalias = in.readString();
         itemname = in.readString();
         itempronunciation = in.readString();
         itemdesc = in.readString();
         itemposition = in.readInt();
+        itempassed = in.readInt();
+        itemlearning = in.readInt();
+        itemmistake = in.readInt();
+        itemreceiveddate = in.readLong();
+        itempasseddate = in.readLong();
     }
 
     @Override
@@ -52,6 +58,11 @@ public class Item implements Parcelable{
         dest.writeString(itempronunciation);
         dest.writeString(itemdesc);
         dest.writeInt(itemposition);
+        dest.writeInt(itempassed);
+        dest.writeInt(itemlearning);
+        dest.writeInt(itemmistake);
+        dest.writeLong(itemreceiveddate);
+        dest.writeLong(itempasseddate);
     }
 
     @Override

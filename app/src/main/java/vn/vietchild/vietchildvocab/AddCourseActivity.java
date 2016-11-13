@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import vn.vietchild.vietchildvocab.Adapters.NewCourseAdapter;
+import vn.vietchild.vietchildvocab.Adapters.RandomAdapter;
 import vn.vietchild.vietchildvocab.DownloadManager.VCDownloader;
 import vn.vietchild.vietchildvocab.Model.Course;
 import vn.vietchild.vietchildvocab.Model.Item;
@@ -58,13 +59,23 @@ public class AddCourseActivity extends BaseActivity {
         mAuths = FirebaseAuth.getInstance();
         rvAddCourse = (RecyclerView)findViewById(R.id.rvAddCourse);
         vc_db = DatabaseHelper.getInstance(getApplicationContext());
-        unregisteredCourses = vc_db.dbGetUnregisteredCourses(getApplicationContext());
-        if (unregisteredCourses.isEmpty()) {
+
+        List<Course> allCourseThumb = new ArrayList<>();
+        allCourseThumb = vc_db.dbGetAllCourseThumb();
+
+        for (Course course: allCourseThumb) {
+            if (course.getCoursestatus()!=1 ) {
+                unregisteredCourses.add(course);
+            }
+        }
+
+        if (allCourseThumb.size()!=0 && unregisteredCourses.isEmpty()) {
             Toast.makeText(this, "NO NEW COURSE", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(getApplicationContext(), NavigationActivity.class);
             startActivity(intent);
             finish();
         }
+
 
         //Recycle View
         courseAdapter = new NewCourseAdapter(this,  unregisteredCourses);
@@ -74,6 +85,7 @@ public class AddCourseActivity extends BaseActivity {
         courseAdapter.setOnItemClickListener(new NewCourseAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View itemView, int position) {
+                showProgressDialog();
              //   Toast.makeText(AddCourseActivity.this, "position: " + position + " it is: " + unregisteredCourses.get(position).getCourseid() , Toast.LENGTH_SHORT).show();
                 writeUserNewCourse(unregisteredCourses.get(position));
                 VCDownloader newDownloader = new VCDownloader(getApplicationContext(),unregisteredCourses.get(position).getCourseid().toString());
@@ -99,12 +111,8 @@ public class AddCourseActivity extends BaseActivity {
         // UPDATE SQLITE DATABASE
 
         vc_db = DatabaseHelper.getInstance(getApplicationContext());
-
-
-
-
-
         vc_db.dbSetCourseStatus(courseID,1,mTIMESTAMP);
+        vc_db = DatabaseHelper.getInstance(getApplicationContext());
 
         // GET ALL Items from Firebase Database to SQLite
         mDatabases.child("courses").child(courseID).child("modules").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -114,8 +122,17 @@ public class AddCourseActivity extends BaseActivity {
                 // Lay module
                 Module module =  moduleSnapshot.getValue(Module.class);
                 // Lay va luu item vao SQLite
-                for (Item item: module.getItems()){
-                    vc_db.dbAddOrUpdateItems(item,courseID,module.getModulealias());
+                List<Item> itemList = module.getItems();
+                if (itemList!=null) {
+                    int itemListSize = itemList.size();
+                    // set Item position randomly
+                    RandomAdapter randomPosition = new RandomAdapter();
+                    ArrayList<Integer> randomPositionArray = randomPosition.getRandomArray(itemListSize, itemListSize);
+
+                    for (int i = 0; i < itemListSize; i++) {
+                        itemList.get(i).setItemposition(randomPositionArray.get(i).intValue());
+                        vc_db.dbAddOrUpdateItems(itemList.get(i), courseID, module.getModulealias());
+                    }
                 }
                 // Load anh va audio cua actived Module
                 if (module.getModuleactive()==1) {
@@ -123,7 +140,7 @@ public class AddCourseActivity extends BaseActivity {
                     itemdownload.downloadItemsImages(module.getModulealias());
                 }
             }
-
+            hideProgressDialog();
             }
 
             @Override

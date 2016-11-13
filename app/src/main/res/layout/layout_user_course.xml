@@ -66,7 +66,14 @@
             android:id="@+id/btnCourseLearn"
             android:layout_toRightOf="@+id/ivUserCourse"
             android:layout_below="@+id/tvSelectedCourseProgress"/>
-
+        <!--
+        <ImageView
+            android:id="@+id/ivCourseSetting"
+            android:layout_width="20dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_dots" />
+-->
     </RelativeLayout>
 
 </android.support.v7.widget.CardView>

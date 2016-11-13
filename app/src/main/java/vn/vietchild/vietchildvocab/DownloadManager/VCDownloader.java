@@ -1,9 +1,9 @@
 package vn.vietchild.vietchildvocab.DownloadManager;
 
 import android.content.Context;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -21,7 +21,6 @@ import java.io.File;
 import java.io.IOException;
 
 import vn.vietchild.vietchildvocab.Model.Item;
-import vn.vietchild.vietchildvocab.R;
 
 /**
  * Created by Nguyen Phung Hung on 03/11/16.
@@ -112,7 +111,7 @@ public class VCDownloader {
                     }
 
                 }
-                Toast.makeText(mContext, mContext.getResources().getString(R.string.added_new_course) , Toast.LENGTH_SHORT).show();
+             //   Toast.makeText(mContext, mContext.getResources().getString(R.string.added_new_course) , Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -156,7 +155,9 @@ public class VCDownloader {
                             else {
                                 Log.i(TAG, "Item image: " + itemName + " exists");
                             }
-                            File localAudioFile = new File(mContext.getApplicationContext().getFilesDir(), itemName + ".mp3");
+                            File filePath = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/VietChild");
+                            filePath.mkdirs();
+                            File localAudioFile = new File(filePath, itemName + ".mp3");
                             if (!localAudioFile.exists()){
                             StorageReference itemAudio = storageRef.child("Vocab/Sound/" + itemName + ".mp3");
 
@@ -182,7 +183,7 @@ public class VCDownloader {
                                 Log.i(TAG, "Item audio: " + itemName + " exists");
                             }
                         }
-                        Toast.makeText(mContext, mContext.getResources().getString(R.string.added_new_module) , Toast.LENGTH_SHORT).show();
+                  //      Toast.makeText(mContext, mContext.getResources().getString(R.string.added_new_module) , Toast.LENGTH_SHORT).show();
 
                     }
 
@@ -192,5 +193,23 @@ public class VCDownloader {
                     }
                 });
 
+    }
+
+    public boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            return true;
+        }
+        return false;
+    }
+
+    /* Checks if external storage is available to at least read */
+    public boolean isExternalStorageReadable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state) ||
+                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+            return true;
+        }
+        return false;
     }
 }

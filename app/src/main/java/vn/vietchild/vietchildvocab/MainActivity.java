@@ -174,14 +174,26 @@ public class MainActivity extends BaseActivity {
                     Course course = coursesnapshot.getValue(Course.class);
                     VCDownloader downloadCourseImage = new VCDownloader(getApplicationContext(),course.getCourseid());
                     downloadCourseImage.downloadCourseImages();
-
-                    vc_db.dbAddOrUpdateCourse(course);
+                    // TINH TOTAL ITEM CUA COURSE
+                    int courseTotalItems = 0;
                     Set<String> strings = course.getModules().keySet();
+                    for (String keysetModule : strings ) {
+                        Module module = course.getModules().get(keysetModule);
+                        courseTotalItems = courseTotalItems + module.getItems().size();
+                    }
+
+                    // ADD COURSE
+                    course.setCoursetotalitems(courseTotalItems);
+                    vc_db.dbAddOrUpdateCourse(course);
+
+                    //TINH TOTAL ITEM Cua MODULE
                     for (String keysetModule : strings )
                     {
                         Module module = course.getModules().get(keysetModule);
+                        module.setModuletotalitems(module.getItems().size());
                         vc_db.dbAddOrUpdateModule(module,course.getCourseid().toString());
                     }
+
                 }
                 hideProgressDialog();
                 Intent intent = new Intent(getApplicationContext(), NavigationActivity.class);
